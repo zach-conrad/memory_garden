@@ -1,0 +1,388 @@
+/* ------------------------------------------------------------------
+   Memory Gardens — design tokens
+   Direction: a garden at dusk. Deep layered greens, warm lantern
+   gold for living memories, soft petal pink for blooms. Fraunces
+   carries the voice; Karla does the quiet work.
+------------------------------------------------------------------- */
+
+:root {
+  /* palette */
+  --soil: #141d18; /* page ground */
+  --canopy: #22382c; /* raised surfaces */
+  --hedge: #335344; /* borders, strokes */
+  --leaf: #8fb89c; /* secondary text, foliage */
+  --mist: #e9f0e9; /* primary text */
+  --lantern: #f0c75e; /* glow / focus / primary action */
+  --bloom: #e8a8bd; /* petals, accents */
+
+  /* type */
+  --font-display: "Fraunces", "Georgia", serif;
+  --font-body: "Karla", "Segoe UI", sans-serif;
+
+  /* rhythm */
+  --radius: 14px;
+  --shadow-glow: 0 0 24px rgba(240, 199, 94, 0.25);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--soil);
+  color: var(--mist);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+  font-weight: 500;
+  margin: 0;
+}
+
+button {
+  font-family: var(--font-body);
+  cursor: pointer;
+}
+
+:focus-visible {
+  outline: 2px solid var(--lantern);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ---------- landing ---------- */
+
+.landing {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 48px 24px;
+  background:
+    radial-gradient(900px 480px at 50% 110%, rgba(51, 83, 68, 0.55), transparent 70%),
+    radial-gradient(500px 280px at 18% 8%, rgba(240, 199, 94, 0.07), transparent 70%),
+    var(--soil);
+}
+
+.landing__eyebrow {
+  font-size: 13px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--leaf);
+  margin: 0 0 16px;
+}
+
+.landing__title {
+  font-size: clamp(44px, 8vw, 84px);
+  line-height: 1.02;
+  letter-spacing: -0.01em;
+  max-width: 14ch;
+}
+
+.landing__title em {
+  font-style: italic;
+  color: var(--bloom);
+}
+
+.landing__sub {
+  max-width: 46ch;
+  color: var(--leaf);
+  margin: 20px 0 36px;
+  font-size: 18px;
+}
+
+.landing__cta {
+  background: var(--lantern);
+  color: #2a230f;
+  border: none;
+  border-radius: 999px;
+  padding: 14px 30px;
+  font-size: 17px;
+  font-weight: 700;
+  box-shadow: var(--shadow-glow);
+  transition: transform 120ms ease;
+}
+
+.landing__cta:hover {
+  transform: translateY(-2px);
+}
+
+.landing__hint {
+  margin-top: 14px;
+  font-size: 13px;
+  color: var(--leaf);
+  opacity: 0.8;
+}
+
+/* ---------- garden ---------- */
+
+.garden {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  background:
+    radial-gradient(1100px 600px at 50% 120%, rgba(51, 83, 68, 0.5), transparent 70%),
+    var(--soil);
+  touch-action: none;
+  cursor: grab;
+}
+
+.garden--dragging {
+  cursor: grabbing;
+}
+
+.garden__world {
+  position: absolute;
+  top: 0;
+  left: 0;
+  will-change: transform;
+}
+
+.garden__topbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 20px;
+  background: linear-gradient(rgba(20, 29, 24, 0.92), rgba(20, 29, 24, 0));
+  z-index: 10;
+  pointer-events: none;
+}
+
+.garden__topbar > * {
+  pointer-events: auto;
+}
+
+.garden__name {
+  font-family: var(--font-display);
+  font-size: 20px;
+  color: var(--mist);
+  background: none;
+  border: none;
+  padding: 6px 10px;
+  border-radius: var(--radius);
+}
+
+.garden__name:hover {
+  background: rgba(51, 83, 68, 0.4);
+}
+
+.garden__search {
+  flex: 1;
+  max-width: 340px;
+  background: var(--canopy);
+  border: 1px solid var(--hedge);
+  border-radius: 999px;
+  color: var(--mist);
+  padding: 9px 16px;
+  font-size: 14px;
+  font-family: var(--font-body);
+}
+
+.garden__search::placeholder {
+  color: var(--leaf);
+  opacity: 0.7;
+}
+
+.garden__count {
+  font-size: 13px;
+  color: var(--leaf);
+  white-space: nowrap;
+}
+
+.garden__helper {
+  position: fixed;
+  bottom: 22px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(34, 56, 44, 0.9);
+  border: 1px solid var(--hedge);
+  border-radius: 999px;
+  padding: 9px 18px;
+  font-size: 14px;
+  color: var(--leaf);
+  z-index: 10;
+  pointer-events: none;
+}
+
+/* a planted memory */
+.blossom {
+  position: absolute;
+  transform: translate(-50%, -100%);
+  background: none;
+  border: none;
+  padding: 0;
+  overflow: visible;
+  cursor: pointer;
+}
+
+.blossom svg {
+  display: block;
+  overflow: visible;
+}
+
+.blossom__glow {
+  filter: drop-shadow(0 0 10px rgba(240, 199, 94, 0.45));
+}
+
+.blossom__label {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-top: 4px;
+  font-size: 12px;
+  color: var(--leaf);
+  white-space: nowrap;
+  opacity: 1;
+  pointer-events: none;
+}
+
+.blossom__desc {
+  position: absolute;
+  top: calc(100% + 22px);
+  left: 50%;
+  transform: translateX(-50%);
+  width: 180px;
+  background: var(--canopy);
+  border: 1px solid var(--hedge);
+  border-radius: 8px;
+  padding: 8px 10px;
+  font-size: 12px;
+  color: var(--mist);
+  white-space: normal;
+  text-align: left;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  opacity: 0;
+  transition: opacity 150ms ease;
+  pointer-events: none;
+  z-index: 5;
+}
+
+.blossom:hover .blossom__desc,
+.blossom:focus-visible .blossom__desc {
+  opacity: 1;
+}
+
+.blossom--dim {
+  opacity: 0.25;
+}
+
+/* ---------- panels (form + viewer) ---------- */
+
+.panel-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 15, 12, 0.6);
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.panel {
+  width: min(440px, 100%);
+  background: var(--canopy);
+  border: 1px solid var(--hedge);
+  border-radius: var(--radius);
+  padding: 26px;
+}
+
+.panel h2 {
+  font-size: 26px;
+  margin-bottom: 4px;
+}
+
+.panel__meta {
+  font-size: 13px;
+  color: var(--leaf);
+  margin: 0 0 16px;
+}
+
+.panel label {
+  display: block;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--leaf);
+  margin: 14px 0 6px;
+}
+
+.panel input,
+.panel textarea {
+  width: 100%;
+  background: var(--soil);
+  border: 1px solid var(--hedge);
+  border-radius: 10px;
+  color: var(--mist);
+  padding: 10px 12px;
+  font-size: 15px;
+  font-family: var(--font-body);
+  resize: vertical;
+}
+
+.panel__error {
+  color: var(--bloom);
+  font-size: 13px;
+  margin: 10px 0 0;
+}
+
+.panel__actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 22px;
+}
+
+.btn {
+  border-radius: 999px;
+  padding: 10px 20px;
+  font-size: 15px;
+  font-weight: 700;
+  border: 1px solid var(--hedge);
+  background: none;
+  color: var(--mist);
+}
+
+.btn--primary {
+  background: var(--lantern);
+  border-color: var(--lantern);
+  color: #2a230f;
+}
+
+.panel__body {
+  white-space: pre-wrap;
+  margin: 0;
+  font-size: 16px;
+}

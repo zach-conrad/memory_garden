@@ -1,0 +1,7 @@
+{
+  "entryPoints": ["src"],
+  "entryPointStrategy": "expand",
+  "exclude": ["**/*.test.tsx", "src/test/**"],
+  "out": "docs",
+  "name": "Memory Gardens"
+}
