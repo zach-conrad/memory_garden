@@ -1,19 +1,12 @@
-/* ------------------------------------------------------------------
-   Memory Gardens — design tokens
-   Direction: a garden at dusk. Deep layered greens, warm lantern
-   gold for living memories, soft petal pink for blooms. Fraunces
-   carries the voice; Karla does the quiet work.
-------------------------------------------------------------------- */
-
 :root {
   /* palette */
-  --soil: #141d18; /* page ground */
-  --canopy: #22382c; /* raised surfaces */
-  --hedge: #335344; /* borders, strokes */
-  --leaf: #8fb89c; /* secondary text, foliage */
-  --mist: #e9f0e9; /* primary text */
-  --lantern: #f0c75e; /* glow / focus / primary action */
-  --bloom: #e8a8bd; /* petals, accents */
+  --soil: #141d18; 
+  --canopy: #22382c; 
+  --hedge: #335344; 
+  --leaf: #8fb89c; 
+  --mist: #e9f0e9; 
+  --lantern: #f0c75e; 
+  --bloom: #e8a8bd; 
 
   /* type */
   --font-display: "Fraunces", "Georgia", serif;

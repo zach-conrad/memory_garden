@@ -1,6 +1,4 @@
 -- Memory Gardens — Milestone 2 schema (WBS 4.2)
--- Run in the Supabase SQL editor, then fill in .env to switch the app
--- from local-first mode to the shared garden.
 
 create table if not exists public.memories (
   id         uuid primary key default gen_random_uuid(),
@@ -26,5 +24,5 @@ create policy "Anyone can plant a memory"
 
 -- Milestone 2 (WBS 4.4): image uploads
 -- Create a public storage bucket named `memory-images` in the dashboard,
--- enforce <= 5MB and jpg/png in frontend validation per Risk #4,
+-- enforce <= 5MB and jpg/png in frontend validation.
 -- then add an `image_path text` column here.
