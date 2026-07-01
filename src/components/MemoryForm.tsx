@@ -17,6 +17,7 @@ export function MemoryForm({ spot, onPlant, onCancel }: MemoryFormProps) {
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
   const [author, setAuthor] = useState("");
+  const [imageFile, setImageFile] = useState<File | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
 
@@ -82,6 +83,18 @@ export function MemoryForm({ spot, onPlant, onCancel }: MemoryFormProps) {
           maxLength={60}
           onChange={(e) => setAuthor(e.target.value)}
           placeholder="Anonymous"
+        />
+
+        <label htmlFor="mem-img">Attach an image (optional)</label>
+        <input
+          id="mem-img"
+          type="file"
+          accept="image/*"
+          onChange={(e) => {
+            if (e.target.files && e.target.files[0]) {
+              setImageFile(e.target.files[0]);
+            }
+          }}
         />
 
         {error && <p className="panel__error">{error}</p>}
