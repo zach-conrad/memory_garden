@@ -35,6 +35,7 @@ export function MemoryForm({ spot, onPlant, onCancel }: MemoryFormProps) {
         author: author.trim() || "Anonymous",
         x: spot.x,
         y: spot.y,
+        image: imageFile, // pass selected file object to parent for Supabase upload
       });
     } catch {
       setError("The memory could not be planted. Try again.");
