@@ -14,6 +14,7 @@ export interface Memory {
   /** World y coordinate (0 .. WORLD_HEIGHT). */
   y: number;
   createdAt: string; // ISO timestamp
+  image?: File | string | null; //handle image file 
 }
 
 /** Fields a user supplies when planting; everything else is derived. */
