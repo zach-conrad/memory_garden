@@ -2,6 +2,15 @@
 
 A shared 2D garden where memories are planted as blossoms and explored by wandering.
 
+## Milestone 2 - Backend Integration
+
+Milestone 2 extends the framework of the project by introducing the shared cloud backend using Supabase. Now the application can hold memories beyond the local browser and preps the project for collaborative image uploads and memory sharing. Further, now users have the input option to add images to their memory, though they have yet to be included in the initial memory display. 
+
+## Backend Features 
+- Supabase SQL database
+- Supabase Storage for uploaded memory images
+- Public access for the MP
+
 ## Milestone 1 — Core Frontend
 
 ### Landing Page
