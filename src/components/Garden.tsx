@@ -5,6 +5,7 @@ import { WORLD_HEIGHT, WORLD_WIDTH, type Memory, type NewMemory } from "../types
 import { Blossom } from "./Blossom";
 import { MemoryForm } from "./MemoryForm";
 import { MemoryView } from "./MemoryView";
+import { AccountBadge } from "./AccountBadge";
 
 const DRAG_THRESHOLD = 6; // px of movement before a press counts as a pan
 
@@ -135,6 +136,7 @@ export function Garden() {
           {memories.length} {memories.length === 1 ? "memory" : "memories"}
           {isShared ? " · shared garden" : " · local garden"}
         </span>
+        <AccountBadge />
       </header>
 
       <div

@@ -1,4 +1,5 @@
 -- Memory Gardens — Milestone 2 schema (WBS 4.2)
+-- Updated: per-user memories (WBS 4.6)
 
 create table if not exists public.memories (
   id uuid primary key default gen_random_uuid(),
@@ -16,20 +17,38 @@ alter table public.memories enable row level security;
 alter table public.memories
 add column if not exists image_path text;
 
+-- Per-user ownership column.
+alter table public.memories
+add column if not exists user_id uuid references auth.users(id) on delete cascade;
+
+-- Clear out old test/anonymous rows that predate the user_id column —
+-- they have no owner and would block the NOT NULL constraint below.
+delete from public.memories where user_id is null;
+
+alter table public.memories
+alter column user_id set not null;
+
+-- New rows auto-attribute to whoever is signed in, so the frontend
+-- insert code doesn't need to pass user_id explicitly.
+alter table public.memories
+alter column user_id set default auth.uid();
+
 drop policy if exists "Memories are publicly readable" on public.memories;
 drop policy if exists "Anyone can plant a memory" on public.memories;
+drop policy if exists "Users can view their own memories" on public.memories;
+drop policy if exists "Users can plant their own memories" on public.memories;
 drop policy if exists "Public can view memory images" on storage.objects;
 drop policy if exists "Public can upload memory images" on storage.objects;
 
-create policy "Memories are publicly readable"
+create policy "Users can view their own memories"
   on public.memories
   for select
-  using (true);
+  using (auth.uid() = user_id);
 
-create policy "Anyone can plant a memory"
+create policy "Users can plant their own memories"
   on public.memories
   for insert
-  with check (true);
+  with check (auth.uid() = user_id);
 
 -- Milestone 2 (WBS 4.4): image uploads
 -- Create a public storage bucket named `memory-images` in the dashboard.
@@ -44,4 +63,3 @@ create policy "Public can upload memory images"
   on storage.objects
   for insert
   with check (bucket_id = 'memory-images');
-

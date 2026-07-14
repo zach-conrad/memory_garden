@@ -210,6 +210,15 @@ button {
   white-space: nowrap;
 }
 
+/* Groups the memory count + account badge so the topbar always sees
+   3 top-level flex children — adding the badge doesn't reshuffle
+   the search box or name via justify-content: space-between. */
+.garden__topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
 .garden__helper {
   position: fixed;
   bottom: 22px;
@@ -223,6 +232,78 @@ button {
   color: var(--leaf);
   z-index: 10;
   pointer-events: none;
+}
+
+/* ---------- account badge ---------- */
+
+.account-badge {
+  position: relative;
+}
+
+.account-badge__trigger {
+  background: none;
+  border: none;
+  padding: 0;
+  line-height: 0;
+  border-radius: 50%;
+}
+
+.account-badge__avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  object-fit: cover;
+  display: block;
+  border: 1px solid var(--hedge);
+}
+
+.account-badge__avatar--fallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--hedge);
+  color: var(--mist);
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.account-badge__menu {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  background: var(--canopy);
+  border: 1px solid var(--hedge);
+  border-radius: var(--radius);
+  padding: 12px;
+  min-width: 160px;
+  box-shadow: var(--shadow-glow);
+  z-index: 20;
+}
+
+.account-badge__menu-name {
+  margin: 0 0 8px;
+  font-size: 13px;
+  color: var(--leaf);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.account-badge__menu-signout {
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: none;
+  color: var(--mist);
+  padding: 8px 10px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: var(--font-body);
+}
+
+.account-badge__menu-signout:hover {
+  background: var(--hedge);
 }
 
 /* a planted memory */

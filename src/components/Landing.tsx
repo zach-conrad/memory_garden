@@ -46,7 +46,7 @@ export function Landing({ onEnter }: LandingProps) {
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.5, delay: 0.4 }}
       >
-        Enter the garden
+        Sign in with Google to enter
       </motion.button>
 
       <motion.p

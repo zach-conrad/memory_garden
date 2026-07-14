@@ -11,3 +11,8 @@ const anonKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string | undefined;
  */
 export const supabase: SupabaseClient | null =
   url && anonKey ? createClient(url, anonKey) : null;
+
+// Testing Connection
+
+console.log("Supabase URL:", import.meta.env.VITE_SUPABASE_URL);
+

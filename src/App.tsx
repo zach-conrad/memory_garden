@@ -1,12 +1,19 @@
-import { useState } from "react";
+import { AuthProvider, useAuth } from "./context/AuthContext";
 import { Landing } from "./components/Landing";
 import { Garden } from "./components/Garden";
 
-/**
- * Application root. Two views for the MVP:
- * the landing page, and the garden itself.
- */
+function AppContent() {
+  const { user, loading, signInWithGoogle } = useAuth();
+
+  if (loading) return <div className="app-loading">Loading…</div>;
+
+  return user ? <Garden /> : <Landing onEnter={signInWithGoogle} />;
+}
+
 export default function App() {
-  const [entered, setEntered] = useState(false);
-  return entered ? <Garden /> : <Landing onEnter={() => setEntered(true)} />;
+  return (
+    <AuthProvider>
+      <AppContent />
+    </AuthProvider>
+  );
 }
