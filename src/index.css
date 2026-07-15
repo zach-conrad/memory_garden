@@ -559,3 +559,65 @@ button {
   color: var(--leaf);
   margin: 2px 0 8px;
 }
+
+.admin-page__detail-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.admin-page__add-form {
+  background: var(--soil);
+  border: 1px solid var(--hedge);
+  border-radius: var(--radius);
+  padding: 16px;
+  margin-bottom: 20px;
+}
+
+.admin-page__add-form label {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--leaf);
+  margin: 10px 0 4px;
+}
+
+.admin-page__add-form input,
+.admin-page__add-form textarea {
+  width: 100%;
+  background: var(--canopy);
+  border: 1px solid var(--hedge);
+  border-radius: 8px;
+  color: var(--mist);
+  padding: 8px 10px;
+  font-size: 14px;
+  font-family: var(--font-body);
+  resize: vertical;
+}
+
+.admin-page__memory-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.admin-page__memory-row h3 {
+  margin: 0;
+}
+
+.admin-page__delete-btn {
+  background: none;
+  border: 1px solid var(--bloom);
+  color: var(--bloom);
+  border-radius: 999px;
+  padding: 4px 12px;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.admin-page__delete-btn:hover {
+  background: var(--bloom);
+  color: #2a230f;
+}

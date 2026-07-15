@@ -1,5 +1,10 @@
 import { useEffect, useState } from "react";
-import { listProfiles, listMemoriesForUser } from "../lib/adminStore";
+import {
+  listProfiles,
+  listMemoriesForUser,
+  deleteMemory,
+  addMemoryForUser,
+} from "../lib/adminStore";
 import type { Profile } from "../types/profile";
 import type { Memory } from "../types/memory";
 import { useIsAdmin } from "../hooks/useIsAdmin";
@@ -13,6 +18,13 @@ export function AdminPage() {
   const [loadingMemories, setLoadingMemories] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const [showAddForm, setShowAddForm] = useState(false);
+  const [newTitle, setNewTitle] = useState("");
+  const [newBody, setNewBody] = useState("");
+  const [newAuthor, setNewAuthor] = useState("");
+  const [saving, setSaving] = useState(false);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+
   useEffect(() => {
     if (!isAdmin) return;
     listProfiles()
@@ -24,6 +36,7 @@ export function AdminPage() {
   async function selectUser(profile: Profile) {
     setSelected(profile);
     setError(null);
+    setShowAddForm(false);
     setLoadingMemories(true);
     try {
       const data = await listMemoriesForUser(profile.id);
@@ -32,6 +45,46 @@ export function AdminPage() {
       setError("Could not load memories for this user.");
     } finally {
       setLoadingMemories(false);
+    }
+  }
+
+  async function handleDelete(memoryId: string) {
+    if (!confirm("Delete this memory permanently?")) return;
+    setDeletingId(memoryId);
+    setError(null);
+    try {
+      await deleteMemory(memoryId);
+      setMemories((prev) => prev.filter((m) => m.id !== memoryId));
+    } catch {
+      setError("Could not delete that memory.");
+    } finally {
+      setDeletingId(null);
+    }
+  }
+
+  async function handleAdd() {
+    if (!selected) return;
+    if (!newTitle.trim() || !newBody.trim()) {
+      setError("A title and story are required.");
+      return;
+    }
+    setSaving(true);
+    setError(null);
+    try {
+      const memory = await addMemoryForUser(selected.id, {
+        title: newTitle.trim(),
+        body: newBody.trim(),
+        author: newAuthor.trim() || selected.fullName || "Anonymous",
+      });
+      setMemories((prev) => [...prev, memory]);
+      setNewTitle("");
+      setNewBody("");
+      setNewAuthor("");
+      setShowAddForm(false);
+    } catch {
+      setError("Could not add that memory.");
+    } finally {
+      setSaving(false);
     }
   }
 
@@ -75,22 +128,85 @@ export function AdminPage() {
         <div className="admin-page__detail">
           {!selected ? (
             <p>Select a user to see their memories.</p>
-          ) : loadingMemories ? (
-            <p>Loading memories…</p>
-          ) : memories.length === 0 ? (
-            <p>{selected.fullName ?? selected.email} hasn't planted any memories.</p>
           ) : (
-            <ul className="admin-page__memory-list">
-              {memories.map((m) => (
-                <li key={m.id}>
-                  <h3>{m.title}</h3>
-                  <p className="admin-page__memory-meta">
-                    {new Date(m.createdAt).toLocaleDateString()} · by {m.author}
-                  </p>
-                  <p>{m.body}</p>
-                </li>
-              ))}
-            </ul>
+            <>
+              <div className="admin-page__detail-header">
+                <h2>{selected.fullName ?? selected.email}</h2>
+                <button
+                  type="button"
+                  className="btn btn--primary"
+                  onClick={() => setShowAddForm((v) => !v)}
+                >
+                  {showAddForm ? "Cancel" : "+ Add memory"}
+                </button>
+              </div>
+
+              {showAddForm && (
+                <div className="admin-page__add-form">
+                  <label htmlFor="admin-title">Title</label>
+                  <input
+                    id="admin-title"
+                    value={newTitle}
+                    maxLength={80}
+                    onChange={(e) => setNewTitle(e.target.value)}
+                  />
+                  <label htmlFor="admin-body">Story</label>
+                  <textarea
+                    id="admin-body"
+                    rows={4}
+                    value={newBody}
+                    maxLength={2000}
+                    onChange={(e) => setNewBody(e.target.value)}
+                  />
+                  <label htmlFor="admin-author">Author (optional)</label>
+                  <input
+                    id="admin-author"
+                    value={newAuthor}
+                    maxLength={60}
+                    onChange={(e) => setNewAuthor(e.target.value)}
+                    placeholder={selected.fullName ?? "Anonymous"}
+                  />
+                  <div className="panel__actions">
+                    <button
+                      type="button"
+                      className="btn btn--primary"
+                      onClick={handleAdd}
+                      disabled={saving}
+                    >
+                      {saving ? "Planting…" : "Plant for this user"}
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {loadingMemories ? (
+                <p>Loading memories…</p>
+              ) : memories.length === 0 ? (
+                <p>No memories yet.</p>
+              ) : (
+                <ul className="admin-page__memory-list">
+                  {memories.map((m) => (
+                    <li key={m.id}>
+                      <div className="admin-page__memory-row">
+                        <h3>{m.title}</h3>
+                        <button
+                          type="button"
+                          className="admin-page__delete-btn"
+                          onClick={() => handleDelete(m.id)}
+                          disabled={deletingId === m.id}
+                        >
+                          {deletingId === m.id ? "Deleting…" : "Delete"}
+                        </button>
+                      </div>
+                      <p className="admin-page__memory-meta">
+                        {new Date(m.createdAt).toLocaleDateString()} · by {m.author}
+                      </p>
+                      <p>{m.body}</p>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </>
           )}
         </div>
       </div>
