@@ -460,3 +460,102 @@ button {
   margin: 0;
   font-size: 16px;
 }
+
+.admin-page {
+  min-height: 100%;
+  padding: 32px 24px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.admin-page h1 {
+  font-size: 28px;
+  margin-bottom: 20px;
+}
+
+.admin-page__error {
+  color: var(--bloom);
+  font-size: 14px;
+  margin-bottom: 16px;
+}
+
+.admin-page__layout {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 24px;
+}
+
+.admin-page__user-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border: 1px solid var(--hedge);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.admin-page__user-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--canopy);
+  border: none;
+  border-bottom: 1px solid var(--hedge);
+  padding: 10px 14px;
+  color: var(--mist);
+  font-size: 14px;
+  text-align: left;
+}
+
+.admin-page__user-btn:hover {
+  background: var(--hedge);
+}
+
+.admin-page__user-btn--active {
+  background: var(--hedge);
+}
+
+.admin-page__avatar {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.admin-page__badge {
+  margin-left: auto;
+  font-size: 11px;
+  color: var(--lantern);
+  border: 1px solid var(--lantern);
+  border-radius: 999px;
+  padding: 1px 8px;
+}
+
+.admin-page__detail {
+  background: var(--canopy);
+  border: 1px solid var(--hedge);
+  border-radius: var(--radius);
+  padding: 20px;
+}
+
+.admin-page__memory-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.admin-page__memory-list li {
+  padding: 14px 0;
+  border-bottom: 1px solid var(--hedge);
+}
+
+.admin-page__memory-list li:last-child {
+  border-bottom: none;
+}
+
+.admin-page__memory-meta {
+  font-size: 12px;
+  color: var(--leaf);
+  margin: 2px 0 8px;
+}
