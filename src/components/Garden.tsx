@@ -46,13 +46,20 @@ export function Garden() {
 
   const onPointerDown = useCallback(
     (e: React.PointerEvent<HTMLDivElement>) => {
+      //catch if they clicked any topbar items to disable memory-form popup
+      const isTopbarItem = !!(e.target as HTMLElement).closest(".garden__name") ||
+                           !!(e.target as HTMLElement).closest(".garden__search") ||
+                           !!(e.target as HTMLElement).closest(".garden__count") ||
+                           !!(e.target as HTMLElement).closest(".account-badge");
       drag.current = {
         startX: e.clientX,
         startY: e.clientY,
         originX: offset.x,
         originY: offset.y,
         moved: false,
-        onBlossom: !!(e.target as HTMLElement).closest(".blossom"),
+
+        //if it's a topbar item, treat as protected like a blossom
+        onBlossom: !!(e.target as HTMLElement).closest(".blossom") || isTopbarItem,
       };
       // Keep receiving move events even if the pointer leaves the element.
       // Guarded because jsdom (used by Vitest) doesn't implement it.
@@ -81,6 +88,7 @@ export function Garden() {
       drag.current = null;
       setDragging(false);
       if (!d || d.moved || d.onBlossom) return;
+
       // A clean click on open ground: convert screen → world coordinates.
       const worldX = e.clientX - offset.x;
       const worldY = e.clientY - offset.y;
