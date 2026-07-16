@@ -33,9 +33,9 @@ export function MemoryView({ memory, onClose }: MemoryViewProps) {
 
 	{typeof memory.image === "string" && memory.image && (
 		<img
-			className="panel_image"
+			className="panel__image"
 			src={memory.image}
-			alt={'Attached to ${memory.title}'}
+			alt={`Attached to ${memory.title}`}
 		/>
 	)}
 
