@@ -42,6 +42,11 @@ export function Blossom({ memory, dimmed, onOpen }: BlossomProps) {
         e.stopPropagation();
         onOpen(memory);
       }}
+	//clicking memory: Milestone 3
+	onClick={(e) => {
+		e.stopPropagation();
+		onOpen(memory);
+	}}
       aria-label={`Open memory: ${memory.title}`}
       initial={{ scale: 0, opacity: 0 }}
       animate={{ scale: 1, opacity: 1 }}
