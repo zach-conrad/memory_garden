@@ -38,15 +38,17 @@ export function Blossom({ memory, dimmed, onOpen }: BlossomProps) {
       type="button"
       className={`blossom${dimmed ? " blossom--dim" : ""}`}
       style={{ left: memory.x, top: memory.y }}
+
+	//clicking memory: Milestone 3
+	onPointerDown={(e) => {
+		e.stopPropagation();
+		onOpen(memory);
+	}}
+
       onClick={(e) => {
         e.stopPropagation();
         onOpen(memory);
       }}
-	//clicking memory: Milestone 3
-	onClick={(e) => {
-		e.stopPropagation();
-		onOpen(memory);
-	}}
       aria-label={`Open memory: ${memory.title}`}
       initial={{ scale: 0, opacity: 0 }}
       animate={{ scale: 1, opacity: 1 }}
