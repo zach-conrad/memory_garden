@@ -30,6 +30,15 @@ export function MemoryView({ memory, onClose }: MemoryViewProps) {
         <p className="panel__meta">
           Planted by {memory.author} · {planted}
         </p>
+
+	{typeof memory.image === "string" && memory.image && (
+		<img
+			className="panel_image"
+			src={memory.image}
+			alt={'Attached to ${memory.title}'}
+		/>
+	)}
+
         <p className="panel__body">{memory.body}</p>
         <div className="panel__actions">
           <button type="button" className="btn btn--primary" onClick={onClose}>

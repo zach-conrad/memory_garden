@@ -461,6 +461,15 @@ button {
   font-size: 16px;
 }
 
+.panel_image {
+	display: block;
+	width: 100%;
+	max-height: 350px;
+	margin: 1rem 0;
+	object-fit: contain;
+	border-radius: 12 px;
+}
+
 .admin-page {
   min-height: 100%;
   padding: 32px 24px;

@@ -42,6 +42,20 @@ const localRepo: MemoryRepo = {
   },
 };
 
+// Convert stored Supabase image into browser accessible URL
+function getPublicImageUrl(imagePath: string | null): string | null {
+  
+	if (!imagePath || !supabase) {
+    		return null;
+  	}
+
+  	const { data } = supabase.storage
+    	.from("memory-images")
+    	.getPublicUrl(imagePath);
+
+  	return data.publicUrl;
+}
+
 /** Milestone 2: shared garden backed by the `memories` table. */
 const supabaseRepo: MemoryRepo = {
   async list() {
