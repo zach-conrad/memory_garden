@@ -38,13 +38,6 @@ export function Blossom({ memory, dimmed, onOpen }: BlossomProps) {
       type="button"
       className={`blossom${dimmed ? " blossom--dim" : ""}`}
       style={{ left: memory.x, top: memory.y }}
-
-	//clicking memory: Milestone 3
-	onPointerDown={(e) => {
-		e.stopPropagation();
-		onOpen(memory);
-	}}
-
       onClick={(e) => {
         e.stopPropagation();
         onOpen(memory);
@@ -97,6 +90,17 @@ export function Blossom({ memory, dimmed, onOpen }: BlossomProps) {
       </svg>
       <span className="blossom__label">{memory.title}</span>
       <span className="blossom__desc">{memory.body}</span>
+
+	// include image in hover box
+	{typeof memory.image === "string" && memory.image && (
+    	  <img
+             className="blossom__image"
+             src={memory.image}
+             alt={`Attached to ${memory.title}`}
+           />
+        )}
+
+  <p>{memory.body}</p>
     </motion.button>
   );
 }

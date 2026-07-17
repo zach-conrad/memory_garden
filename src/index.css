@@ -353,14 +353,23 @@ button {
   color: var(--mist);
   white-space: normal;
   text-align: left;
-  display: -webkit-box;
-  -webkit-line-clamp: 4;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
   opacity: 0;
   transition: opacity 150ms ease;
   pointer-events: none;
   z-index: 5;
+}
+
+.blossom__desc p {
+  margin: 0;
+}
+
+.blossom__image {
+  display: block;
+  width: 100%;
+  max-height: 150px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 8px;
 }
 
 .blossom:hover .blossom__desc,
