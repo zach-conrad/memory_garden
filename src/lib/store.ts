@@ -63,7 +63,7 @@ const supabaseRepo: MemoryRepo = {
   async list() {
     const { data, error } = await supabase!
       .from("memories")
-      .select("id, title, body, author, x, y, created_at")
+      .select("id, title, body, author, x, y, image_path, created_at")
       .order("created_at", { ascending: true });
     if (error) throw error;
     return (data ?? []).map((row) => ({
@@ -73,6 +73,7 @@ const supabaseRepo: MemoryRepo = {
       author: row.author,
       x: row.x,
       y: row.y,
+      image: getPublicImageUrl(row.image_path),
       createdAt: row.created_at,
     }));
   },
