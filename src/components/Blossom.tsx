@@ -88,19 +88,20 @@ export function Blossom({ memory, dimmed, onOpen }: BlossomProps) {
           <circle cx={cx} cy={head} r={size * 0.38} fill="#f7e6b0" />
         </g>
       </svg>
-      <span className="blossom__label">{memory.title}</span>
-      <span className="blossom__desc">{memory.body}</span>
+      
+<span className="blossom__label">{memory.title}</span>
 
-	// include image in hover box
-	{typeof memory.image === "string" && memory.image && (
-    	  <img
-             className="blossom__image"
-             src={memory.image}
-             alt={`Attached to ${memory.title}`}
-           />
-        )}
+<div className="blossom__desc">
+  {typeof memory.image === "string" && memory.image && (
+    <img
+      className="blossom__image"
+      src={memory.image}
+      alt={`Attached to ${memory.title}`}
+    />
+  )}
 
   <p>{memory.body}</p>
-    </motion.button>
+</div>
+</motion.button>
   );
 }
