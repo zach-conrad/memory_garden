@@ -42,12 +42,28 @@ const localRepo: MemoryRepo = {
   },
 };
 
+// Convert stored Supabase image into browser accessible URL
+function getPublicImageUrl(imagePath: string | null): string | null {
+  
+	if (!imagePath || !supabase) {
+    		return null;
+  	}
+
+  	const { data } = supabase.storage
+    	.from("memory-images")
+    	.getPublicUrl(imagePath);
+
+  	return data.publicUrl;
+}
+
 /** Milestone 2: shared garden backed by the `memories` table. */
+// milestone 3: implement the support for viewing the images of memories
+
 const supabaseRepo: MemoryRepo = {
   async list() {
     const { data, error } = await supabase!
       .from("memories")
-      .select("id, title, body, author, x, y, created_at")
+      .select("id, title, body, author, x, y, image_path, created_at")
       .order("created_at", { ascending: true });
     if (error) throw error;
     return (data ?? []).map((row) => ({
@@ -57,10 +73,31 @@ const supabaseRepo: MemoryRepo = {
       author: row.author,
       x: row.x,
       y: row.y,
+      image: getPublicImageUrl(row.image_path),
       createdAt: row.created_at,
     }));
   },
+
   async add(input) {
+    let imagePath: string | null = null;
+
+    if (input.image instanceof File) {
+      const extension = input.image.name.split(".").pop() || "jpg";
+      imagePath = `${crypto.randomUUID()}.${extension}`;
+
+      const { error: uploadError } = await supabase!.storage
+        .from("memory-images")
+        .upload(imagePath, input.image, {
+          cacheControl: "3600",
+          contentType: input.image.type,
+          upsert: false,
+        });
+
+      if (uploadError) {
+        throw uploadError;
+      }
+    }
+
     const { data, error } = await supabase!
       .from("memories")
       .insert({
@@ -69,10 +106,21 @@ const supabaseRepo: MemoryRepo = {
         author: input.author,
         x: input.x,
         y: input.y,
+        image_path: imagePath,
       })
-      .select("id, title, body, author, x, y, created_at")
+      .select("id, title, body, author, x, y, image_path, created_at")
       .single();
-    if (error) throw error;
+
+    if (error) {
+      if (imagePath) {
+        await supabase!.storage
+          .from("memory-images")
+          .remove([imagePath]);
+      }
+
+      throw error;
+    }
+
     return {
       id: data.id,
       title: data.title,
@@ -80,6 +128,7 @@ const supabaseRepo: MemoryRepo = {
       author: data.author,
       x: data.x,
       y: data.y,
+      image: getPublicImageUrl(data.image_path),
       createdAt: data.created_at,
     };
   },
