@@ -2,6 +2,13 @@
 
 A shared 2D garden where memories are planted as blossoms and explored by wandering.
 
+## Milestone 3 - Image and UI changes
+Milestone 3 works on allowing for images to be displayed, and fixing some of the UI problems (like interactive elements aggresively triggering popups). This allows the user to work with the bar above and interact with the user profile and other elements without being forced to interact with the memory creation feature. 
+
+Additionally, changes have been made to allow for images to be displayed in the box that appears when the user hovers over a memory, this has all occured on the backend of development. 
+
+App.Tests, have been created to test login in functionality for authentication, to allow users to share memories with one another. 
+
 ## Milestone 2 - Backend Integration
 
 Milestone 2 extends the framework of the project by introducing the shared cloud backend using Supabase. Now the application can hold memories beyond the local browser and preps the project for collaborative image uploads and memory sharing. Further, now users have the input option to add images to their memory, though they have yet to be included in the initial memory display. 
