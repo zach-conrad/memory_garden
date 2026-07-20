@@ -101,6 +101,7 @@ export function Blossom({ memory, dimmed, onOpen }: BlossomProps) {
   )}
 
   <p>{memory.body}</p>
+  <p className="blossom__author">— {memory.author || "Anonymous"}</p>
 </div>
 </motion.button>
   );

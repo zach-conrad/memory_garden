@@ -28,8 +28,18 @@ export function MemoryView({ memory, onClose }: MemoryViewProps) {
       >
         <h2>{memory.title}</h2>
         <p className="panel__meta">
-          Planted by {memory.author} · {planted}
+          Planted by {memory.author} · {planted} ·{" "}
+          <span className={`privacy-badge${memory.isShared ? "" : " privacy-badge--private"}`}>
+            {memory.isShared ? "🌍 Shared" : "🔒 Private"}
+          </span>
         </p>
+        {typeof memory.image === "string" && memory.image && (
+          <img
+            className="panel__image"
+            src={memory.image}
+            alt={`Attached to ${memory.title}`}
+          />
+        )}
         <p className="panel__body">{memory.body}</p>
         <div className="panel__actions">
           <button type="button" className="btn btn--primary" onClick={onClose}>

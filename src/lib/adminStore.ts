@@ -23,7 +23,7 @@ export async function listMemoriesForUser(userId: string): Promise<Memory[]> {
   if (!supabase) return [];
   const { data, error } = await supabase
     .from("memories")
-    .select("id, title, body, author, x, y, created_at")
+    .select("id, title, body, author, x, y, is_shared, created_at")
     .eq("user_id", userId)
     .order("created_at", { ascending: true });
   if (error) throw error;
@@ -34,6 +34,7 @@ export async function listMemoriesForUser(userId: string): Promise<Memory[]> {
     author: row.author,
     x: row.x,
     y: row.y,
+    isShared: row.is_shared,
     createdAt: row.created_at,
   }));
 }
@@ -64,7 +65,7 @@ export async function addMemoryForUser(
       y,
       user_id: userId,
     })
-    .select("id, title, body, author, x, y, created_at")
+    .select("id, title, body, author, x, y, is_shared, created_at")
     .single();
   if (error) throw error;
   return {
@@ -74,6 +75,7 @@ export async function addMemoryForUser(
     author: data.author,
     x: data.x,
     y: data.y,
+    isShared: data.is_shared,
     createdAt: data.created_at,
   };
 }

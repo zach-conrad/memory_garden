@@ -140,11 +140,13 @@ export function Garden() {
           onChange={(e) => setQuery(e.target.value)}
           onPointerDown={(e) => e.stopPropagation()}
         />
-        <span className="garden__count">
-          {memories.length} {memories.length === 1 ? "memory" : "memories"}
-          {isShared ? " · shared garden" : " · local garden"}
-        </span>
-        <AccountBadge />
+        <div className="garden__topbar-right">
+          <span className="garden__count">
+            {memories.length} {memories.length === 1 ? "memory" : "memories"}
+            {isShared ? " · shared garden" : " · local garden"}
+          </span>
+          <AccountBadge />
+        </div>
       </header>
 
       <div

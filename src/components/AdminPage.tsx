@@ -8,6 +8,7 @@ import {
 import type { Profile } from "../types/profile";
 import type { Memory } from "../types/memory";
 import { useIsAdmin } from "../hooks/useIsAdmin";
+import { LoadingScreen } from "./LoadingScreen";
 
 export function AdminPage() {
   const { isAdmin, loading: checkingAdmin } = useIsAdmin();
@@ -88,17 +89,45 @@ export function AdminPage() {
     }
   }
 
-  if (checkingAdmin) return <div className="admin-page">Checking access…</div>;
-  if (!isAdmin) return <div className="admin-page">You don't have access to this page.</div>;
+  if (checkingAdmin) return <LoadingScreen />;
+
+  if (!isAdmin) {
+    return (
+      <div className="restricted">
+        <div className="restricted__card">
+          <span className="restricted__icon" aria-hidden="true">
+            🔒
+          </span>
+          <h1>This patch is off-limits</h1>
+          <p>You don&rsquo;t have admin access, so there&rsquo;s nothing to tend here.</p>
+          <a className="btn btn--primary" href="/">
+            Back to the garden
+          </a>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="admin-page">
-      <h1>Admin · Users</h1>
+      <header className="admin-page__header">
+        <div>
+          <p className="admin-page__eyebrow">Admin</p>
+          <h1>Gardeners &amp; their memories</h1>
+        </div>
+        <a className="admin-page__back" href="/">
+          ← Back to the garden
+        </a>
+      </header>
+
       {error && <p className="admin-page__error">{error}</p>}
+
       <div className="admin-page__layout">
         <ul className="admin-page__user-list">
           {loadingProfiles ? (
-            <li>Loading users…</li>
+            <li className="admin-page__empty">Loading users…</li>
+          ) : profiles.length === 0 ? (
+            <li className="admin-page__empty">No users yet.</li>
           ) : (
             profiles.map((p) => (
               <li key={p.id}>
@@ -127,11 +156,19 @@ export function AdminPage() {
 
         <div className="admin-page__detail">
           {!selected ? (
-            <p>Select a user to see their memories.</p>
+            <div className="admin-page__empty admin-page__empty--panel">
+              <span aria-hidden="true">🌱</span>
+              <p>Select a gardener to see what they&rsquo;ve planted.</p>
+            </div>
           ) : (
             <>
               <div className="admin-page__detail-header">
-                <h2>{selected.fullName ?? selected.email}</h2>
+                <div>
+                  <h2>{selected.fullName ?? selected.email}</h2>
+                  <p className="admin-page__detail-count">
+                    {memories.length} {memories.length === 1 ? "memory" : "memories"}
+                  </p>
+                </div>
                 <button
                   type="button"
                   className="btn btn--primary"
@@ -180,13 +217,13 @@ export function AdminPage() {
               )}
 
               {loadingMemories ? (
-                <p>Loading memories…</p>
+                <p className="admin-page__empty">Loading memories…</p>
               ) : memories.length === 0 ? (
-                <p>No memories yet.</p>
+                <p className="admin-page__empty">No memories yet.</p>
               ) : (
                 <ul className="admin-page__memory-list">
                   {memories.map((m) => (
-                    <li key={m.id}>
+                    <li key={m.id} className="admin-page__memory-card">
                       <div className="admin-page__memory-row">
                         <h3>{m.title}</h3>
                         <button
@@ -199,7 +236,10 @@ export function AdminPage() {
                         </button>
                       </div>
                       <p className="admin-page__memory-meta">
-                        {new Date(m.createdAt).toLocaleDateString()} · by {m.author}
+                        {new Date(m.createdAt).toLocaleDateString()} · by {m.author} ·{" "}
+                        <span className={`privacy-badge${m.isShared ? "" : " privacy-badge--private"}`}>
+                          {m.isShared ? "🌍 Shared" : "🔒 Private"}
+                        </span>
                       </p>
                       <p>{m.body}</p>
                     </li>

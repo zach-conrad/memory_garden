@@ -18,6 +18,7 @@ export function MemoryForm({ spot, onPlant, onCancel }: MemoryFormProps) {
   const [body, setBody] = useState("");
   const [author, setAuthor] = useState("");
   const [imageFile, setImageFile] = useState<File | null>(null);
+  const [isShared, setIsShared] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
 
@@ -36,6 +37,7 @@ export function MemoryForm({ spot, onPlant, onCancel }: MemoryFormProps) {
         x: spot.x,
         y: spot.y,
         image: imageFile, // pass selected file object to parent for Supabase upload
+        isShared,
       });
     } catch {
       setError("The memory could not be planted. Try again.");
@@ -90,13 +92,46 @@ export function MemoryForm({ spot, onPlant, onCancel }: MemoryFormProps) {
         <input
           id="mem-img"
           type="file"
-          accept="image/*"
+          accept="image/jpeg,image/png"
           onChange={(e) => {
-            if (e.target.files && e.target.files[0]) {
-              setImageFile(e.target.files[0]);
+            const file = e.target.files?.[0];
+            if (!file) return;
+            if (!["image/jpeg", "image/png"].includes(file.type)) {
+              setError("Images must be a JPG or PNG file.");
+              e.target.value = "";
+              return;
             }
+            if (file.size > 5 * 1024 * 1024) {
+              setError("Images must be 5MB or smaller.");
+              e.target.value = "";
+              return;
+            }
+            setError(null);
+            setImageFile(file);
           }}
         />
+
+        <div className="privacy-toggle">
+          <button
+            type="button"
+            role="switch"
+            aria-checked={isShared}
+            className={`privacy-toggle__switch${isShared ? " privacy-toggle__switch--on" : ""}`}
+            onClick={() => setIsShared((v) => !v)}
+          >
+            <span className="privacy-toggle__thumb" />
+          </button>
+          <div>
+            <p className="privacy-toggle__label">
+              {isShared ? "Shared with the garden" : "Kept private"}
+            </p>
+            <p className="privacy-toggle__hint">
+              {isShared
+                ? "Every visitor can see this blossom."
+                : "Only you will ever see this blossom."}
+            </p>
+          </div>
+        </div>
 
         {error && <p className="panel__error">{error}</p>}
 

@@ -63,3 +63,71 @@ create policy "Public can upload memory images"
   on storage.objects
   for insert
   with check (bucket_id = 'memory-images');
+
+-- Milestone 4 — shared vs. private gardens, and admin moderation.
+--
+-- Every memory now carries its own visibility: shared memories are
+-- readable by any signed-in gardener, private ones only by their owner.
+-- The frontend's regular Garden view (src/lib/store.ts) always asks for
+-- "mine OR shared" explicitly and never relies on RLS alone to hide
+-- other people's private memories from that screen. The broader "admins
+-- can see everything" policy below exists ONLY to power the /admin
+-- panel's cross-user browsing (src/lib/adminStore.ts) — it must not be
+-- the thing gating what a signed-in admin sees on their own garden.
+alter table public.memories
+add column if not exists is_shared boolean not null default true;
+
+drop policy if exists "Users can view their own memories" on public.memories;
+drop policy if exists "Anyone can view shared memories" on public.memories;
+drop policy if exists "Admins can view all memories" on public.memories;
+drop policy if exists "Users can plant their own memories" on public.memories;
+drop policy if exists "Admins can plant memories for any user" on public.memories;
+drop policy if exists "Admins can delete any memory" on public.memories;
+
+create policy "Users can view their own memories"
+  on public.memories
+  for select
+  using (auth.uid() = user_id);
+
+create policy "Anyone can view shared memories"
+  on public.memories
+  for select
+  using (is_shared = true);
+
+create policy "Admins can view all memories"
+  on public.memories
+  for select
+  using (
+    exists (
+      select 1 from public.profiles
+      where profiles.id = auth.uid() and profiles.is_admin = true
+    )
+  );
+
+create policy "Users can plant their own memories"
+  on public.memories
+  for insert
+  with check (auth.uid() = user_id);
+
+-- Needed for the admin panel's "+ Add memory" form, which plants a
+-- memory on behalf of a different user_id than the signed-in admin.
+create policy "Admins can plant memories for any user"
+  on public.memories
+  for insert
+  with check (
+    exists (
+      select 1 from public.profiles
+      where profiles.id = auth.uid() and profiles.is_admin = true
+    )
+  );
+
+-- Needed for the admin panel's per-memory "Delete" button.
+create policy "Admins can delete any memory"
+  on public.memories
+  for delete
+  using (
+    exists (
+      select 1 from public.profiles
+      where profiles.id = auth.uid() and profiles.is_admin = true
+    )
+  );

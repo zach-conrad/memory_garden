@@ -31,7 +31,7 @@ export function AccountBadge() {
   const initial = name.charAt(0).toUpperCase();
 
   return (
-    <div className="account-badge" ref={rootRef}>
+    <div className="account-badge" ref={rootRef} onPointerDown={(e) => e.stopPropagation()}>
       <button
         type="button"
         className="account-badge__trigger"

@@ -9,7 +9,8 @@ import type { Memory, NewMemory } from "../types/memory";
  * the repo is chosen automatically based on whether `.env` is filled in.
  */
 export interface MemoryRepo {
-  list(): Promise<Memory[]>;
+  /** Scoped to what the signed-in user (`userId`) is allowed to see: their own memories plus anything marked shared. */
+  list(userId: string | null): Promise<Memory[]>;
   add(input: NewMemory): Promise<Memory>;
 }
 
@@ -25,7 +26,7 @@ function makeMemory(input: NewMemory): Memory {
 
 /** Milestone 1: text-only, persists in this browser via localStorage. */
 const localRepo: MemoryRepo = {
-  async list() {
+  async list(_userId) {
     try {
       const raw = localStorage.getItem(LOCAL_KEY);
       return raw ? (JSON.parse(raw) as Memory[]) : [];
@@ -35,7 +36,7 @@ const localRepo: MemoryRepo = {
   },
   async add(input) {
     const memory = makeMemory(input);
-    const all = await this.list();
+    const all = await this.list(null);
     all.push(memory);
     localStorage.setItem(LOCAL_KEY, JSON.stringify(all));
     return memory;
@@ -60,11 +61,17 @@ function getPublicImageUrl(imagePath: string | null): string | null {
 // milestone 3: implement the support for viewing the images of memories
 
 const supabaseRepo: MemoryRepo = {
-  async list() {
-    const { data, error } = await supabase!
+  // Always scopes to "mine OR shared" explicitly here, rather than
+  // trusting RLS alone — RLS separately grants admins broader read
+  // access for the admin panel (see adminStore.ts), and that access
+  // must never leak into this, the regular Garden view.
+  async list(userId) {
+    let query = supabase!
       .from("memories")
-      .select("id, title, body, author, x, y, image_path, created_at")
+      .select("id, title, body, author, x, y, image_path, is_shared, user_id, created_at")
       .order("created_at", { ascending: true });
+    query = userId ? query.or(`user_id.eq.${userId},is_shared.eq.true`) : query.eq("is_shared", true);
+    const { data, error } = await query;
     if (error) throw error;
     return (data ?? []).map((row) => ({
       id: row.id,
@@ -74,6 +81,7 @@ const supabaseRepo: MemoryRepo = {
       x: row.x,
       y: row.y,
       image: getPublicImageUrl(row.image_path),
+      isShared: row.is_shared,
       createdAt: row.created_at,
     }));
   },
@@ -107,8 +115,9 @@ const supabaseRepo: MemoryRepo = {
         x: input.x,
         y: input.y,
         image_path: imagePath,
+        is_shared: input.isShared,
       })
-      .select("id, title, body, author, x, y, image_path, created_at")
+      .select("id, title, body, author, x, y, image_path, is_shared, created_at")
       .single();
 
     if (error) {
@@ -129,6 +138,7 @@ const supabaseRepo: MemoryRepo = {
       x: data.x,
       y: data.y,
       image: getPublicImageUrl(data.image_path),
+      isShared: data.is_shared,
       createdAt: data.created_at,
     };
   },

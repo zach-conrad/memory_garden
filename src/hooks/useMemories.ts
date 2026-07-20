@@ -17,7 +17,7 @@ export function useMemories() {
     let cancelled = false;
     setLoading(true);
     repo
-      .list()
+      .list(user?.id ?? null)
       .then((list) => {
         if (!cancelled) setMemories(list);
       })
