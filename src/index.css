@@ -241,6 +241,36 @@ button {
   gap: 14px;
 }
 
+.view-toggle {
+  display: flex;
+  background: var(--canopy);
+  border: 1px solid var(--hedge);
+  border-radius: 999px;
+  padding: 3px;
+  gap: 2px;
+}
+
+.view-toggle__btn {
+  background: none;
+  border: none;
+  border-radius: 999px;
+  padding: 6px 12px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--leaf);
+  white-space: nowrap;
+  transition: background 120ms ease, color 120ms ease;
+}
+
+.view-toggle__btn:hover {
+  color: var(--mist);
+}
+
+.view-toggle__btn--active {
+  background: var(--hedge);
+  color: var(--mist);
+}
+
 .garden__helper {
   position: fixed;
   bottom: 22px;

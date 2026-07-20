@@ -7,18 +7,20 @@ interface MemoryFormProps {
   spot: { x: number; y: number };
   onPlant: (input: NewMemory) => Promise<void>;
   onCancel: () => void;
+  /** Starting state for the privacy toggle — matches whichever garden view was open when planting started. */
+  defaultShared?: boolean;
 }
 
 /**
  * Memory creation form (WBS 3.4). Text-only for the MVP — image upload
  * arrives with Supabase Storage in Milestone 2 (WBS 4.4).
  */
-export function MemoryForm({ spot, onPlant, onCancel }: MemoryFormProps) {
+export function MemoryForm({ spot, onPlant, onCancel, defaultShared = true }: MemoryFormProps) {
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
   const [author, setAuthor] = useState("");
   const [imageFile, setImageFile] = useState<File | null>(null);
-  const [isShared, setIsShared] = useState(true);
+  const [isShared, setIsShared] = useState(defaultShared);
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
 

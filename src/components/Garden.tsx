@@ -29,6 +29,8 @@ export function Garden() {
   const [plantingSpot, setPlantingSpot] = useState<{ x: number; y: number } | null>(null);
   const [openMemory, setOpenMemory] = useState<Memory | null>(null);
   const [query, setQuery] = useState("");
+  // Which memories are on view: your own private ones, or everyone's shared ones.
+  const [viewMode, setViewMode] = useState<"private" | "shared">("shared");
 
   const drag = useRef<{
     startX: number;
@@ -50,6 +52,7 @@ export function Garden() {
       const isTopbarItem = !!(e.target as HTMLElement).closest(".garden__name") ||
                            !!(e.target as HTMLElement).closest(".garden__search") ||
                            !!(e.target as HTMLElement).closest(".garden__count") ||
+                           !!(e.target as HTMLElement).closest(".view-toggle") ||
                            !!(e.target as HTMLElement).closest(".account-badge");
       drag.current = {
         startX: e.clientX,
@@ -106,11 +109,18 @@ export function Garden() {
     [plant],
   );
 
+  // A memory shows up in exactly one view: private ones only in "private",
+  // shared ones only in "shared" — never both, regardless of who planted it.
+  const visibleMemories = useMemo(
+    () => memories.filter((m) => (viewMode === "shared" ? m.isShared : !m.isShared)),
+    [memories, viewMode],
+  );
+
   const matches = useMemo(() => {
     const q = query.trim().toLowerCase();
     if (!q) return null;
     return new Set(
-      memories
+      visibleMemories
         .filter(
           (m) =>
             m.title.toLowerCase().includes(q) ||
@@ -119,7 +129,7 @@ export function Garden() {
         )
         .map((m) => m.id),
     );
-  }, [memories, query]);
+  }, [visibleMemories, query]);
 
   return (
     <div
@@ -140,10 +150,30 @@ export function Garden() {
           onChange={(e) => setQuery(e.target.value)}
           onPointerDown={(e) => e.stopPropagation()}
         />
-        <div className="garden__topbar-right">
+        <div className="garden__topbar-right" onPointerDown={(e) => e.stopPropagation()}>
+          <div className="view-toggle" role="tablist" aria-label="Garden view">
+            <button
+              type="button"
+              role="tab"
+              aria-selected={viewMode === "private"}
+              className={`view-toggle__btn${viewMode === "private" ? " view-toggle__btn--active" : ""}`}
+              onClick={() => setViewMode("private")}
+            >
+              🔒 My Garden
+            </button>
+            <button
+              type="button"
+              role="tab"
+              aria-selected={viewMode === "shared"}
+              className={`view-toggle__btn${viewMode === "shared" ? " view-toggle__btn--active" : ""}`}
+              onClick={() => setViewMode("shared")}
+            >
+              🌍 Shared Garden
+            </button>
+          </div>
           <span className="garden__count">
-            {memories.length} {memories.length === 1 ? "memory" : "memories"}
-            {isShared ? " · shared garden" : " · local garden"}
+            {visibleMemories.length} {visibleMemories.length === 1 ? "memory" : "memories"}
+            {isShared ? "" : " · local garden"}
           </span>
           <AccountBadge />
         </div>
@@ -157,7 +187,7 @@ export function Garden() {
           transform: `translate(${offset.x}px, ${offset.y}px)`,
         }}
       >
-        {memories.map((m) => (
+        {visibleMemories.map((m) => (
           <Blossom
             key={m.id}
             memory={m}
@@ -172,8 +202,10 @@ export function Garden() {
           ? "Tending the garden…"
           : error
             ? error
-            : memories.length === 0
-              ? "The ground is open. Click anywhere to plant the first memory."
+            : visibleMemories.length === 0
+              ? viewMode === "private"
+                ? "No private memories yet. Click anywhere to plant one — only you will see it."
+                : "No shared memories yet. Click anywhere to plant one for everyone."
               : "Drag to wander · click open ground to plant"}
       </div>
 
@@ -182,6 +214,7 @@ export function Garden() {
           spot={plantingSpot}
           onPlant={handlePlant}
           onCancel={() => setPlantingSpot(null)}
+          defaultShared={viewMode === "shared"}
         />
       )}
 
