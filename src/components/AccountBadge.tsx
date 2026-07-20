@@ -1,9 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import { useAuth } from "../context/AuthContext";
+import { useUserRole } from "../hooks/useUserRole";
 
-/** Circular avatar with a click-to-open sign-out popup (account manager). */
+/** Circular avatar with a click-to-open account menu (admin/test links, sign out). */
 export function AccountBadge() {
   const { user, signOut } = useAuth();
+  const { isAdmin, canAccessTests } = useUserRole();
   const [open, setOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
 
@@ -56,6 +58,16 @@ export function AccountBadge() {
       {open && (
         <div className="account-badge__menu" role="menu">
           <p className="account-badge__menu-name">{name}</p>
+          {isAdmin && (
+            <a href="/admin" className="account-badge__menu-link" role="menuitem">
+              Admin Menu
+            </a>
+          )}
+          {canAccessTests && (
+            <a href="/tests" className="account-badge__menu-link" role="menuitem">
+              Tests Menu
+            </a>
+          )}
           <button
             type="button"
             className="account-badge__menu-signout"

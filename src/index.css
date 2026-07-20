@@ -342,6 +342,25 @@ button {
   text-overflow: ellipsis;
 }
 
+.account-badge__menu-link {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: none;
+  color: var(--mist);
+  padding: 8px 10px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: var(--font-body);
+  text-decoration: none;
+  box-sizing: border-box;
+}
+
+.account-badge__menu-link:hover {
+  background: var(--hedge);
+}
+
 .account-badge__menu-signout {
   width: 100%;
   text-align: left;
@@ -352,6 +371,12 @@ button {
   border-radius: 8px;
   font-size: 14px;
   font-family: var(--font-body);
+}
+
+.account-badge__menu-link + .account-badge__menu-signout {
+  margin-top: 4px;
+  border-top: 1px solid var(--hedge);
+  padding-top: 12px;
 }
 
 .account-badge__menu-signout:hover {
