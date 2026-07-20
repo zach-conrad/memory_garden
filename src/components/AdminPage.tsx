@@ -4,20 +4,22 @@ import {
   listMemoriesForUser,
   deleteMemory,
   addMemoryForUser,
+  updateUserRole,
 } from "../lib/adminStore";
-import type { Profile } from "../types/profile";
+import type { Profile, Role } from "../types/profile";
 import type { Memory } from "../types/memory";
-import { useIsAdmin } from "../hooks/useIsAdmin";
+import { useUserRole } from "../hooks/useUserRole";
 import { LoadingScreen } from "./LoadingScreen";
 
 export function AdminPage() {
-  const { isAdmin, loading: checkingAdmin } = useIsAdmin();
+  const { isAdmin, loading: checkingAdmin } = useUserRole();
   const [profiles, setProfiles] = useState<Profile[]>([]);
   const [selected, setSelected] = useState<Profile | null>(null);
   const [memories, setMemories] = useState<Memory[]>([]);
   const [loadingProfiles, setLoadingProfiles] = useState(true);
   const [loadingMemories, setLoadingMemories] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [savingRole, setSavingRole] = useState(false);
 
   const [showAddForm, setShowAddForm] = useState(false);
   const [newTitle, setNewTitle] = useState("");
@@ -46,6 +48,21 @@ export function AdminPage() {
       setError("Could not load memories for this user.");
     } finally {
       setLoadingMemories(false);
+    }
+  }
+
+  async function handleRoleChange(role: Role) {
+    if (!selected) return;
+    setSavingRole(true);
+    setError(null);
+    try {
+      await updateUserRole(selected.id, role);
+      setSelected({ ...selected, role });
+      setProfiles((prev) => prev.map((p) => (p.id === selected.id ? { ...p, role } : p)));
+    } catch {
+      setError("Could not update that user's role.");
+    } finally {
+      setSavingRole(false);
     }
   }
 
@@ -147,7 +164,9 @@ export function AdminPage() {
                     />
                   )}
                   <span>{p.fullName ?? p.email ?? p.id}</span>
-                  {p.isAdmin && <span className="admin-page__badge">admin</span>}
+                  {p.role && (
+                    <span className={`admin-page__badge admin-page__badge--${p.role}`}>{p.role}</span>
+                  )}
                 </button>
               </li>
             ))
@@ -176,6 +195,21 @@ export function AdminPage() {
                 >
                   {showAddForm ? "Cancel" : "+ Add memory"}
                 </button>
+              </div>
+
+              <div className="admin-page__role-control">
+                <label htmlFor="admin-role">Access</label>
+                <select
+                  id="admin-role"
+                  value={selected.role ?? ""}
+                  disabled={savingRole}
+                  onChange={(e) => handleRoleChange((e.target.value || null) as Role)}
+                >
+                  <option value="">No special access</option>
+                  <option value="tester">Tester — can view /tests</option>
+                  <option value="admin">Admin — full access</option>
+                </select>
+                {savingRole && <span className="admin-page__role-saving">Saving…</span>}
               </div>
 
               {showAddForm && (

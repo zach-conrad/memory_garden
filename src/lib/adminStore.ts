@@ -1,5 +1,5 @@
 import { supabase } from "./supabase";
-import type { Profile } from "../types/profile";
+import type { Profile, Role } from "../types/profile";
 import type { Memory } from "../types/memory";
 import { WORLD_WIDTH, WORLD_HEIGHT } from "../types/memory";
 
@@ -7,7 +7,7 @@ export async function listProfiles(): Promise<Profile[]> {
   if (!supabase) return [];
   const { data, error } = await supabase
     .from("profiles")
-    .select("id, email, full_name, avatar_url, is_admin")
+    .select("id, email, full_name, avatar_url, role")
     .order("email", { ascending: true });
   if (error) throw error;
   return (data ?? []).map((row) => ({
@@ -15,8 +15,14 @@ export async function listProfiles(): Promise<Profile[]> {
     email: row.email,
     fullName: row.full_name,
     avatarUrl: row.avatar_url,
-    isAdmin: row.is_admin,
+    role: row.role as Role,
   }));
+}
+
+export async function updateUserRole(userId: string, role: Role): Promise<void> {
+  if (!supabase) return;
+  const { error } = await supabase.from("profiles").update({ role }).eq("id", userId);
+  if (error) throw error;
 }
 
 export async function listMemoriesForUser(userId: string): Promise<Memory[]> {

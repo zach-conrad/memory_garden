@@ -131,3 +131,75 @@ create policy "Admins can delete any memory"
       where profiles.id = auth.uid() and profiles.is_admin = true
     )
   );
+
+-- Milestone 5 — admin / tester roles.
+--
+-- `role` becomes the single source of truth for who gets elevated
+-- access, replacing `is_admin` (left in place, unused, rather than
+-- dropped, in case anything else still reads it). 'admin' can do
+-- everything 'tester' can, plus manage users from /admin. 'tester'
+-- only unlocks the production health-check page at /tests.
+alter table public.profiles
+add column if not exists role text check (role in ('admin', 'tester'));
+
+update public.profiles set role = 'admin' where is_admin = true and role is null;
+
+alter table public.profiles enable row level security;
+
+drop policy if exists "Profiles are readable by signed-in users" on public.profiles;
+drop policy if exists "Admins can update any profile" on public.profiles;
+
+-- The admin panel's user list (src/lib/adminStore.ts) lists every
+-- gardener, not just the signed-in one, so every signed-in user needs
+-- read access to the whole table (this matches the access the app
+-- already depended on before RLS was made explicit here).
+create policy "Profiles are readable by signed-in users"
+  on public.profiles
+  for select
+  using (auth.role() = 'authenticated');
+
+create policy "Admins can update any profile"
+  on public.profiles
+  for update
+  using (
+    exists (
+      select 1 from public.profiles as admin_check
+      where admin_check.id = auth.uid() and admin_check.role = 'admin'
+    )
+  );
+
+-- Re-point the memories admin policies at `role` instead of the
+-- retired `is_admin` flag, so there's one source of truth.
+drop policy if exists "Admins can view all memories" on public.memories;
+drop policy if exists "Admins can plant memories for any user" on public.memories;
+drop policy if exists "Admins can delete any memory" on public.memories;
+
+create policy "Admins can view all memories"
+  on public.memories
+  for select
+  using (
+    exists (
+      select 1 from public.profiles
+      where profiles.id = auth.uid() and profiles.role = 'admin'
+    )
+  );
+
+create policy "Admins can plant memories for any user"
+  on public.memories
+  for insert
+  with check (
+    exists (
+      select 1 from public.profiles
+      where profiles.id = auth.uid() and profiles.role = 'admin'
+    )
+  );
+
+create policy "Admins can delete any memory"
+  on public.memories
+  for delete
+  using (
+    exists (
+      select 1 from public.profiles
+      where profiles.id = auth.uid() and profiles.role = 'admin'
+    )
+  );

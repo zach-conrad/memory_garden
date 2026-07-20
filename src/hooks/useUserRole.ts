@@ -1,28 +1,30 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { supabase } from "../lib/supabase";
+import type { Role } from "../types/profile";
 
-export function useIsAdmin() {
+/** The signed-in user's role: 'admin' unlocks /admin and /tests, 'tester' only /tests. */
+export function useUserRole() {
   const { user } = useAuth();
-  const [isAdmin, setIsAdmin] = useState(false);
+  const [role, setRole] = useState<Role>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     let cancelled = false;
     if (!user || !supabase) {
-      setIsAdmin(false);
+      setRole(null);
       setLoading(false);
       return;
     }
     setLoading(true);
     supabase
       .from("profiles")
-      .select("is_admin")
+      .select("role")
       .eq("id", user.id)
       .single()
       .then(({ data, error }) => {
         if (cancelled) return;
-        setIsAdmin(!error && !!data?.is_admin);
+        setRole(!error ? ((data?.role as Role) ?? null) : null);
         setLoading(false);
       });
     return () => {
@@ -30,5 +32,10 @@ export function useIsAdmin() {
     };
   }, [user]);
 
-  return { isAdmin, loading };
+  return {
+    role,
+    isAdmin: role === "admin",
+    canAccessTests: role === "admin" || role === "tester",
+    loading,
+  };
 }
