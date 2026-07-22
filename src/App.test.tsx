@@ -20,14 +20,14 @@ describe("Memory Gardens MVP", () => {
   it("opens the application on the landing page", () => {
     render(<App />);
     expect(
-      screen.getByRole("button", { name: /enter the garden/i }),
+      screen.getByRole("button", { name: /sign in with google to enter/i }),
     ).toBeInTheDocument();
   });
 
   it("enters the garden from the landing page", async () => {
     const user = userEvent.setup();
     render(<App />);
-    await user.click(screen.getByRole("button", { name: /enter the garden/i }));
+    await user.click(screen.getByRole("button", { name: /sign in with google to enter/i }));
     expect(screen.getByTestId("garden")).toBeInTheDocument();
     expect(screen.getByRole("status")).toBeInTheDocument();
   });
@@ -35,7 +35,7 @@ describe("Memory Gardens MVP", () => {
   it("plants a memory and grows a blossom at the clicked spot", async () => {
     const user = userEvent.setup();
     render(<App />);
-    await user.click(screen.getByRole("button", { name: /enter the garden/i }));
+    await user.click(screen.getByRole("button", { name: /sign in with google to enter/i }));
 
     // Click open ground (pointer down + up with no movement).
     await user.click(screen.getByTestId("garden"));
@@ -55,7 +55,7 @@ describe("Memory Gardens MVP", () => {
   it("opens a planted memory for viewing", async () => {
     const user = userEvent.setup();
     render(<App />);
-    await user.click(screen.getByRole("button", { name: /enter the garden/i }));
+    await user.click(screen.getByRole("button", { name: /sign in with google to enter/i }));
     await user.click(screen.getByTestId("garden"));
     await user.type(screen.getByLabelText(/title/i), "Coast drive");
     await user.type(screen.getByLabelText(/the memory/i), "Windows down, radio up.");
