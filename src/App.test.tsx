@@ -48,7 +48,7 @@ describe("Memory Gardens MVP", () => {
 
     //await async findByTestId to resolve garden element before asserting 
     const gardenEl = await screen.findByTestId("garden");
-    expect(gardenEl).toBeInTheDocument;
+    expect(gardenEl).toBeInTheDocument();
 
   });
 
@@ -81,20 +81,37 @@ describe("Memory Gardens MVP", () => {
     expect(screen.getByText(/1 memory/i)).toBeInTheDocument();
   });
 
-
+  //TEST 4: verify opening an existing memory displays its content
   it("opens a planted memory for viewing", async () => {
+    //mock authenticated user state
+    vi.spyOn(AuthContextModule, "useAuth").mockReturnValue({
+      user: {id: "test-user-id", email: "test@example.com"} as any,
+      loading: false,
+      signInWithGoogle: vi.fn(),
+      signOut: vi.fn(),
+    });
+
     const user = userEvent.setup();
     render(<App />);
-    await user.click(screen.getByRole("button", { name: /sign in with google to enter/i }));
-    await user.click(screen.getByTestId("garden"));
+
+    //await garden element & trigger planting
+    const gardenEl = await screen.findByTestId("garden");
+    await user.click(gardenEl);
+
     await user.type(screen.getByLabelText(/title/i), "Coast drive");
     await user.type(screen.getByLabelText(/the memory/i), "Windows down, radio up.");
     await user.click(screen.getByRole("button", { name: /plant memory/i }));
 
+    //click blossom to open its viewing modal
     await user.click(
       await screen.findByRole("button", { name: /open memory: coast drive/i }),
     );
-    expect(screen.getByText(/windows down, radio up/i)).toBeInTheDocument();
+
+    // target the opened modal dialog panel specifically
+    const panelEl = screen.getByRole("dialog", { name: /coast/i });
+
+    //ensure memory text and author label are visible
+    expect(panelEl).toHaveTextContent(/windows down, radio up/i);
     expect(screen.getByText(/planted by anonymous/i)).toBeInTheDocument();
   });
 });
