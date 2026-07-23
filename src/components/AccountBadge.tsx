@@ -1,8 +1,26 @@
+/**
+* Displays the authenticated user's profile avatar and account menu. 
+*
+* Renders a clickable account badge that lets the user navigate user-specific
+* options, and sign-out.
+*
+* @packageDocumentation
+*/
+
 import { useEffect, useRef, useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { useUserRole } from "../hooks/useUserRole";
 
-/** Circular avatar with a click-to-open account menu (admin/test links, sign out). */
+/** Circular avatar with a click-to-open account menu (admin/test links, sign out). 
+*
+* Displays the user's profile avatar or initials and provides access to
+* role-specific navigation options, including the Admin page, Test page,
+* and sign-out functionality.
+*
+* @returns A React component containing the user's account badge and dropdown menu,
+* or 'null' if no user is authenticated. 
+*/
+
 export function AccountBadge() {
   const { user, signOut } = useAuth();
   const { isAdmin, canAccessTests } = useUserRole();

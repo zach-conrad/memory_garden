@@ -1,7 +1,16 @@
+/**
+*
+* Renders an interactive flower representing a planted memory. 
+*
+* Displays procedurally generated blossoms based on memory data, allowing
+* users to view memory details by selecting a flower in the garden.
+* @packageDocumentation
+*/
+
 import { motion } from "framer-motion";
 import type { Memory } from "../types/memory";
 
-interface BlossomProps {
+export interface BlossomProps {
   memory: Memory;
   dimmed: boolean;
   onOpen: (memory: Memory) => void;

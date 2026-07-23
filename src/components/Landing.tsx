@@ -1,6 +1,16 @@
+/**
+*
+* Displays the application's landing page and sign-in screen.
+*
+* Presents an introduction to Memory Gardens and provides users with
+* an entry point to authenticate and begin exploring the garden. 
+* @packageDocumentation
+*/
+
+
 import { motion } from "framer-motion";
 
-interface LandingProps {
+export interface LandingProps {
   onEnter: () => void;
 }
 

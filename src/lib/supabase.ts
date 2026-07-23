@@ -1,3 +1,13 @@
+/**
+* 
+* Configure and exports the application's Supabase client
+*
+* Initializes the Supabase connection using environment variables and provides
+* a shared client instance for database, aythentication, and
+* storage operations in MG.
+* @packageDocumentation
+*/
+
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 
 const url = import.meta.env.VITE_SUPABASE_URL as string | undefined;

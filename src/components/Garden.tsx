@@ -1,3 +1,14 @@
+/**
+*
+* Implements the interactive Memory Gardens environment. 
+*
+* Manages garden navigation, memory planting, searching, viewing 
+* and rendering of blossoms while coordinating user interactions
+* the shared and private garden spaces.
+*
+* @packageDocumentation
+*/
+
 import { useCallback, useMemo, useRef, useState } from "react";
 import { useMemories } from "../hooks/useMemories";
 import { isShared } from "../lib/store";

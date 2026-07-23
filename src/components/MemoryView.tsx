@@ -1,7 +1,17 @@
+/**
+*
+* Displays the details of a selected memory.
+*
+* Presents a memory's title, author, date, privacy status, image, and
+* content in a dialog. This allows users to read individual memories planted
+* within the Memory Gardens application
+* @packageDocumentation
+*/
+
 import { motion } from "framer-motion";
 import type { Memory } from "../types/memory";
 
-interface MemoryViewProps {
+export interface MemoryViewProps {
   memory: Memory;
   onClose: () => void;
 }
