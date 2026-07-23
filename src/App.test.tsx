@@ -43,7 +43,7 @@ describe("Memory Gardens MVP", () => {
       loading: false,
       signInWithGoogle: vi.fn(),
       signOut: vi.fn(),
-    })    
+    });    
     render(<App />);
 
     //await async findByTestId to resolve garden element before asserting 
@@ -60,7 +60,7 @@ describe("Memory Gardens MVP", () => {
       loading: false,
       signInWithGoogle: vi.fn(),
       signOut: vi.fn(),
-    })
+    });
 
     const user = userEvent.setup();
     render(<App />);
