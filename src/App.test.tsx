@@ -52,25 +52,35 @@ describe("Memory Gardens MVP", () => {
 
   });
 
+    //TEST 3: verify planting a memory adds a blossom
   it("plants a memory and grows a blossom at the clicked spot", async () => {
+    // Mock authed user state
+    vi.spyOn(AuthContextModule, "useAuth").mockReturnValue({
+      user: {id: "test-user-id", email: "test@example.com"} as any,
+      loading: false,
+      signInWithGoogle: vi.fn(),
+      signOut: vi.fn(),
+    })
+
     const user = userEvent.setup();
     render(<App />);
-    await user.click(screen.getByRole("button", { name: /sign in with google to enter/i }));
 
-    // Click open ground (pointer down + up with no movement).
-    await user.click(screen.getByTestId("garden"));
+    //await finding garden canvas element, then click to open planting modal
+    const gardenEl = await screen.findByTestId("garden");
+    await user.click(gardenEl);
 
     // Fill the planting form.
     await user.type(screen.getByLabelText(/title/i), "First bloom");
     await user.type(screen.getByLabelText(/the memory/i), "Our kickoff meeting.");
     await user.click(screen.getByRole("button", { name: /plant memory/i }));
 
-    // The blossom now lives in the garden.
+    // verify blossom button appears now in DOM and counter updates
     expect(
       await screen.findByRole("button", { name: /open memory: first bloom/i }),
     ).toBeInTheDocument();
     expect(screen.getByText(/1 memory/i)).toBeInTheDocument();
   });
+
 
   it("opens a planted memory for viewing", async () => {
     const user = userEvent.setup();
