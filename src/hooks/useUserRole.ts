@@ -1,3 +1,13 @@
+/**
+*
+* Retrieves the authenticated user's role and access permissions. 
+*
+* Determines the current user's role and provides role-based access
+* infromation for administrative and testing features within the 
+* Memory Garden
+* @packageDocumentation
+*/
+
 import { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { supabase } from "../lib/supabase";

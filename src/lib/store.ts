@@ -1,3 +1,13 @@
+/**
+* 
+* Provides the application's data storage layer for managing memories
+*
+* Defines a repository interface for loading and storing memories for both local
+* browser storage and Supabase. While allowing consistant data access API to the rest of
+* MG applications. 
+* @packageDocumentation
+*/
+
 import { supabase } from "./supabase";
 import type { Memory, NewMemory } from "../types/memory";
 

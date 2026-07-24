@@ -1,3 +1,12 @@
+/**
+*
+* Provides an administrative interface for managing users and their memories. 
+*
+* Allows administrators to view user profiles, manage user roles, add new memories
+* and delete existing memories from the garden.
+* @packageDocumentation
+*/
+
 import { useEffect, useState } from "react";
 import {
   listProfiles,
@@ -10,6 +19,18 @@ import type { Profile, Role } from "../types/profile";
 import type { Memory } from "../types/memory";
 import { useUserRole } from "../hooks/useUserRole";
 import { LoadingScreen } from "./LoadingScreen";
+
+/**
+ * Renders the administrative dashboard for managing users and memories.
+ *
+ * The component verifies that the current user has administrator access,
+ * loads registered profiles, displays memories belonging to the selected
+ * user, and provides controls for updating roles, adding memories, and
+ * deleting memories.
+ *
+ * @returns The administrative dashboard, a loading screen while access is
+ * being checked, or a restricted-access message for non-administrators.
+ */
 
 export function AdminPage() {
   const { isAdmin, loading: checkingAdmin } = useUserRole();
@@ -36,6 +57,14 @@ export function AdminPage() {
       .finally(() => setLoadingProfiles(false));
   }, [isAdmin]);
 
+/**
+* Selects a user profile and tretrieves the memories owned by that user.
+*
+* @param profile - User profile selected from the administrative user list.
+* @returns A promise that resolves after the user's memories have been loaded.
+* @packageDocumentation
+*/
+
   async function selectUser(profile: Profile) {
     setSelected(profile);
     setError(null);
@@ -51,6 +80,14 @@ export function AdminPage() {
     }
   }
 
+/** 
+* Updates the access role assigned to the selected user.
+*
+* @param role - New role assigned to the selected profile.
+* @returns A promise that resolves after the role update completes.
+* @packageDocumentation
+*/
+
   async function handleRoleChange(role: Role) {
     if (!selected) return;
     setSavingRole(true);
@@ -65,6 +102,15 @@ export function AdminPage() {
       setSavingRole(false);
     }
   }
+
+/** 
+* Creates a new memory for the currently selected user.
+*
+* Validates the tite and story, submits the memory through the adminstrative 
+* data store, and updates the displa memory list.
+*
+* @returns A promise that resolves after the memory has been created.
+*/
 
   async function handleDelete(memoryId: string) {
     if (!confirm("Delete this memory permanently?")) return;

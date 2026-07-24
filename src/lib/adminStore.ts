@@ -1,7 +1,23 @@
+/**
+*
+* Provides administrative data access and management functions
+* 
+* Contains helper functions for managing user profiles, user roles
+* and memories through the Supabase database, supporting admin features in Memory Garden
+* @packageDocumentation
+*/
+
 import { supabase } from "./supabase";
 import type { Profile, Role } from "../types/profile";
 import type { Memory } from "../types/memory";
 import { WORLD_WIDTH, WORLD_HEIGHT } from "../types/memory";
+
+/**
+* Retreives all registerd user profiles for the administrative interface. 
+*
+* @returns a promise containing the available user profiles. 
+* @throws An error when Supabase is unavailable or the query fails.
+*/
 
 export async function listProfiles(): Promise<Profile[]> {
   if (!supabase) return [];
@@ -19,11 +35,25 @@ export async function listProfiles(): Promise<Profile[]> {
   }));
 }
 
+/**
+* Changes the access role assigned to a user.
+*
+* @returns a promise that resolves after the profile is updated.
+* @throws An error when the update cannot be completed.
+*/
+
 export async function updateUserRole(userId: string, role: Role): Promise<void> {
   if (!supabase) return;
   const { error } = await supabase.from("profiles").update({ role }).eq("id", userId);
   if (error) throw error;
 }
+
+/**
+* Retrieves the memories owned by a selected user.
+*
+* @returns A promise containing the user's memories.
+* @throws An error when the memory query fails.
+*/
 
 export async function listMemoriesForUser(userId: string): Promise<Memory[]> {
   if (!supabase) return [];

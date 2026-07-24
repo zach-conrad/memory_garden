@@ -1,4 +1,13 @@
 /**
+* 
+* Defines memory-related types and shared garden dimensions.
+*
+* Contains the data models used to represent memories, new memory
+* submission, and constants in MG.
+* @packageDocumentation
+*/
+
+/**
  * A memory planted in the garden.
  *
  * `x` and `y` are world coordinates inside the shared 2D garden,

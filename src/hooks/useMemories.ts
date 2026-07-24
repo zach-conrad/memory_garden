@@ -1,3 +1,12 @@
+/** 
+*
+* Provides access to memory data and planting functionality.
+*
+* Retrieves memories from the application's data store, manges loading and error states
+* It also exposes function for creating new memories in the MG application
+* @packageDocumentation
+*/
+
 import { useCallback, useEffect, useState } from "react";
 import { repo } from "../lib/store";
 import type { Memory, NewMemory } from "../types/memory";

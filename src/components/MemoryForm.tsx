@@ -1,8 +1,17 @@
+/**
+* 
+* Provides the form used to create and plant new memories. 
+*
+* Collects user input for a memory, validates submitted data, and
+* creates new public or private memories within the MG (Memory Garden) application
+* @packageDocumentation
+*/
+
 import { useState } from "react";
 import { motion } from "framer-motion";
 import type { NewMemory } from "../types/memory";
 
-interface MemoryFormProps {
+export interface MemoryFormProps {
   /** World coordinates of the chosen planting spot. */
   spot: { x: number; y: number };
   onPlant: (input: NewMemory) => Promise<void>;

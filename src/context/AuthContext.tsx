@@ -1,3 +1,13 @@
+/** 
+* 
+* Manages user authentication and authentication state
+*
+* Provides authentication context for the application, including user
+* session management, Google sign-in, sing-out, and access to the 
+* current authenticated user.
+* @packageDocumentation
+*/
+
 import {
   createContext,
   useContext,
@@ -8,7 +18,7 @@ import {
 import type { Session, User } from "@supabase/supabase-js";
 import { supabase } from "../lib/supabase";
 
-interface AuthContextValue {
+export interface AuthContextValue {
   user: User | null;
   loading: boolean;
   signInWithGoogle: () => Promise<void>;
@@ -16,6 +26,13 @@ interface AuthContextValue {
 }
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
+
+/**
+* Provides authentication state and actions to the application.
+*
+* The provider listens for Supabase authentication changes and exposes
+* the current user, loading state, Google sign-in, and sing-out actions
+*/
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
@@ -62,6 +79,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     </AuthContext.Provider>
   );
 }
+
+/**
+* Retrieves the current authentication context. 
+*
+* @returns the signed-in user, loading state, and authentication functions.
+* @throws Error when used outside an AuthProvider.
+*/
 
 export function useAuth() {
   const ctx = useContext(AuthContext);

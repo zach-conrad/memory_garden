@@ -1,3 +1,12 @@
+/**
+*
+* Displays an animated loading screen while the application initializes
+*
+* Shows a blooming flower animation as the application verifies user
+* authentication and prepares the memory Gardens experience.
+* @packageDocumentation
+*/
+
 import { motion } from "framer-motion";
 
 const PETAL_COLORS = ["#e8a8bd", "#f0c75e", "#b7d4f0", "#d6b8ec", "#f0b48a"];

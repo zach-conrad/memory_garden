@@ -1,3 +1,12 @@
+/**
+* 
+* Executes production health checks for the Memory Gardens application
+*
+* Defines diagnostic tests that verify backend connectivity, authentication, data acces,
+* and security policies to help monitor the application's overall health
+* @packageDocumentation
+*/
+
 import { supabase } from "./supabase";
 import { repo } from "./store";
 

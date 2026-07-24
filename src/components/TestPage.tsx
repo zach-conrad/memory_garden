@@ -1,3 +1,13 @@
+/**
+* 
+* Displays the application's production health check dashboard.
+*
+* Provides authorized testers and administrators with a live view of application
+* health, allowing them to monitor system status and run
+* diagnostic checks.
+* @packageDocumentation
+*/
+
 import { useCallback, useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { useUserRole } from "../hooks/useUserRole";
